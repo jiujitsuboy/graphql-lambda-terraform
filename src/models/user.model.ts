@@ -46,6 +46,7 @@ class User {
       user.dob = dob !== undefined? dob: user.dob
       user.address = address !== undefined? address: user.address
       user.description = description !== undefined? description: user.description
+      user.updateAt = new Date()
       return user.save()
     })
     

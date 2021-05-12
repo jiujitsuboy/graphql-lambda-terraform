@@ -5,7 +5,6 @@ const NO_SUCH_USER_EXISTS = 'No such user exists'
 
 const Mutation:any ={
     createUser(parent: any, args: any, ctx: any, info: any): Promise<User>{
-        console.log(args)
         const user = new User(args.data.name,
             args.data.dob,
             args.data.address,
