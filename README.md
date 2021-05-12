@@ -2,7 +2,7 @@
 
 This project expose a graphql api for CRUD operations on Users.
 
-The graphql api is implemented using nodejs and graphql-yoga module. The persistance layer is implemented on AWS DynamoDB an connected to the nodejs app using the modele @aws/dynamodb-data-mapper.
+The graphql api is implemented using nodejs and graphql-yoga module. The persistance layer is implemented on AWS DynamoDB an connected to the nodejs app using the modele *@aws/dynamodb-data-mapper*.
 
 For deployment testing, the graphql api was deployed as lambda function on AWS and exposed through AWS API-Gateway
 
@@ -20,6 +20,16 @@ The api offer operations over an user. The properties this user has are:
 - createAt
 - updateAt
 
+# Graphql operations
+## Queries
+-**findUser:** Find a user by Id
+-**getUsers:** Get all user. This result set is paginated (by default by two items). Use *pageSize*(number) to set the number of items per page. Use lastEvaluatedId (userId) to indicate from where the query should return items.
+-**getAddressCoordinates:** Gets the coordinates of the user address (use mapbox https://docs.mapbox.com/api/overview/)
+## Mutations
+-**createUser:** persist a new user
+-**updateUser:** update an existing user
+-**deleteUser:** delete an existing user
+
 # Setup and deployment
 
 ## Enviroment variables
@@ -34,14 +44,21 @@ For this project to run, you need to deployed into AWS cloud, for that you are g
 - AWS CLI
 - Terraform
 
+## Compress source code
+
+Compress the *node_modules* and content of *dist/* folder and named as Archive.zip
+
+## Upload Compress file to S3
+
+Upload the zip file to S3 bucket (s3://project-bucket.lambda. You can use what ever you want, but you should update it on the terraform aws_lambda_function at set the *s3_bucket* with your custom bucket)
+
 ## Deploy
 
-After setup AWS CLI and Terraform with your AWS credentials, run the following commands on your terminal in the [PROJECT_DIRECTORY]/terraform folder:
+After setup AWS CLI and Terraform with your AWS credentials, run the following commands on your terminal in the *[PROJECT_DIRECTORY]/terraform* folder:
 
 This initialize the terraform providers
 ```
 Terraform init
-
 ```
 Show you the plan that terraform is going to perform
 ```
@@ -53,6 +70,35 @@ Terraform apply
 ```
 Rollback the infrastructure deployed
 Terraform destroy
+
+### Deployment components
+
+After deploying to AWS you will end with the following components:
+- api-gateway
+- lambda function
+- dynamoDB
+
+### Testing deployment
+
+Open the AWS Managment console and go to api-gateway service. You should see ***graphql-user-api***. 
+
+![](images/Api-Gateway.png)
+
+You can test the lambda graphql using the testing feature of AWS api gateway. Write the following Request Body
+
+```
+{"query":"mutation {\n  createUser(data: {name: \"lidsay\", dob:\"1988-07-07\", address: \"near galerias\", description:\"what a cute girl\", imageUrl: \"www.lindsay.instagram.com\"}){\n    id,\n    name,\n    description\n  } \n}"}
+```
+You should see the HTTP 200 status code
+
+![](images/Lambda-Test.png)
+
+
+### Testing with Postman
+
+The graphql api should be expose and can be called using the URL of the api gateway state *production*
+
+![](images/Postman.png)
 
 # Local testing
 
@@ -73,3 +119,23 @@ Finally to connect you DB manager run the following command on your terminal
 ```
 DYNAMO_ENDPOINT=http://localhost:8000 dynamodb-admin
 ```
+Open you browser at *localhost:8001*. Now create a table called *users* and add select as keyschema the name *id* with the type String.
+
+![](images/dynamodb-admin.png)
+
+## Graphql Server
+
+Run the following command from your terminal:
+
+```
+npm run build
+npm run local
+```
+Open your browser at localhost:4000 
+
+![](images/GraphQL-Server.png)
+
+# Code coverage
+
+![](images/coverage.png)
+
