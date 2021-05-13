@@ -34,7 +34,7 @@ The api offer operations over an user. The properties this user has are:
 
 ## Enviroment variables
 
-In order to connect to AWS dynamoDB, the project require the following enviroment variables
+In order to connect to AWS dynamoDB, the project require the following enviroment variables which are setup in the terraform lambda file (*[PROJECT_DIRECTORY]/terraform/lambda_graphql.tf*)
 - **ACCESS_KEY_ID:** your AWS account access key id.
 - **SECRET_ACCESS_KEY:** your AWS account secret access key
 - **NODE_ENV:** indicate the execution enviroment (for local testing, set it to development, anything else will be consider production)
@@ -62,11 +62,11 @@ Terraform init
 ```
 Show you the plan that terraform is going to perform
 ```
-Terraform plan
+Terraform plan -var="aws_access_key_id=[ACCESS_KEY_ID]" -var="aws_secret_access_key=[SECRET_ACCESS_KEY]"
 ```
 Apply the plan, deploying the infrastracture
 ```
-Terraform apply
+Terraform apply -var="aws_access_key_id=[ACCESS_KEY_ID]" -var="aws_secret_access_key=[SECRET_ACCESS_KEY]
 ```
 Rollback the infrastructure deployed
 Terraform destroy
