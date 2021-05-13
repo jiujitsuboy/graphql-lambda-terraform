@@ -1,8 +1,3 @@
-/*data "archive_file" "graphql-function" {
-  type = "zip"
-  output_path = "lambda.zip"
-  source_dir = "../../graphql-api"
-}*/
 resource "aws_lambda_function" "graphql-function" {
   #filename = "Archive.zip"
   s3_bucket = "project-bucket-lambda"
@@ -19,6 +14,8 @@ resource "aws_lambda_function" "graphql-function" {
   environment {
     variables = {
       NODE_ENV = "production"
+      ACCESS_KEY_ID = var.aws_access_key_id
+      SECRET_ACCESS_KEY = var.aws_secret_access_key
     }
   }
 }
