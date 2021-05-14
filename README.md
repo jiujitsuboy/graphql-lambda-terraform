@@ -24,8 +24,8 @@ The api offer operations over an user. The properties this user has are:
 # Graphql operations
 ## Queries
 - **findUser:** Find a user by Id
-- **findUsersByName:** Find users by name. This result set is paginated (by default by two items). Use *pageSize*(number) to set the number of items per page. Use lastEvaluatedUser (userId, name) to indicate from where the query should return items.
-- **getUsers:** Get all user. This result set is paginated (by default by two items). Use *pageSize*(number) to set the number of items per page. Use lastEvaluatedId (userId) to indicate from where the query should return items.
+- **findUsersByName:** Find users by name. This result set is paginated (by default by two items). Use *pageSize*(number) to set the number of items per page. Use *lastEvaluatedUser (userId, name)* to indicate from where the query should return items.
+- **getUsers:** Get all user. This result set is paginated (by default by two items). Use *pageSize*(number) to set the number of items per page. Use *lastEvaluatedId (userId)* to indicate from where the query should return items.
 - **getAddressCoordinates:** Gets the coordinates of the user address (use mapbox https://docs.mapbox.com/api/overview/)
 ## Mutations
 - **createUser:** persist a new user
