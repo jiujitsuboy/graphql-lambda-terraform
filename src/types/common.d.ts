@@ -1,9 +1,9 @@
-type ScanOptions = {
-    limit: number
-    startKey?: any
+type PaginatedUsersCompose = {
+    lastEvaluatedUser: Partial<User>
+    users: any//IteratorResult<User[], any>
 }
 
-type PaginatedUsers = {
+type PaginatedUsersId = {
     lastEvaluatedId: Partial<User>
     users: any//IteratorResult<User[], any>
 }

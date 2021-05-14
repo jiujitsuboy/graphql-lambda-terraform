@@ -145,11 +145,16 @@ describe('User suit', () => {
       )
       userExpected.id = '12345'
 
-      const nextFunction = jest.fn(() => {
-        return { value: userExpected }
+      const pagesFunction = jest.fn(() => {
+        return {
+          next: () => {
+            return { value: userExpected }
+          },
+          lastEvaluatedKey: {id: userExpected.id, name: userExpected.name}
+        }
       })
 
-      const queryIterator = { next: nextFunction, paginator: { paginator: { _count: 0, _scannedCount: 0, lastResolved: {}, client: { config: { credentials: { expired: false, expireTime: null, refreshCallbacks: [], accessKeyId: "key" }, credentialProvider: { providers: [null, null, null, null, null, null, null], resolveCallbacks: [] }, region: "us-east-1", logger: null, apiVersions: {}, apiVersion: null, endpoint: "http://localhost:8000", httpOptions: { timeout: 120000 }, maxRedirects: 10, paramValidation: true, sslEnabled: true, "s3ForcePathStyle": false, "s3BucketEndpoint": false, "s3DisableBodySigning": true, "s3UsEast1RegionalEndpoint": "legacy", computeChecksums: true, convertResponseTypes: true, correctClockSkew: false, customUserAgent: " dynamodb-data-mapper-js/0.4.0", "dynamoDbCrc32": true, systemClockOffset: 0, signatureVersion: null, signatureCache: true, retryDelayOptions: {}, useAccelerateEndpoint: false, clientSideMonitoring: false, endpointCacheSize: 1000, hostPrefixEnabled: true, stsRegionalEndpoints: "legacy", accessKeyId: "key", secretAccessKey: "key" }, endpoint: { protocol: "http:", host: "localhost:8000", port: 8000, hostname: "localhost", pathname: "/", path: "/", href: "http://localhost:8000/" }, _events: { apiCallAttempt: [null], apiCall: [null] }, _clientId: 1 }, nextRequest: { TableName: "users", IndexName: "name_index", KeyConditionExpression: "#attr0 = :val1", ExpressionAttributeNames: { "#attr0": "name" }, ExpressionAttributeValues: { ":val1": { S: "lindsay4" } } } }, lastResolved: {}, itemSchema: { id: { type: "String", keyType: "HASH" }, name: { type: "String" }, dob: { type: "Date" }, address: { type: "String" }, description: { type: "String" }, createdAt: { type: "Date" }, updateAt: { type: "Date" }, imageUrl: { type: "String" } } }, _count: 0, lastResolved: {}, pending: [] } as any as QueryIterator<User>
+      const queryIterator = { pages: pagesFunction, paginator: { paginator: { _count: 0, _scannedCount: 0, lastResolved: {}, client: { config: { credentials: { expired: false, expireTime: null, refreshCallbacks: [], accessKeyId: "key" }, credentialProvider: { providers: [null, null, null, null, null, null, null], resolveCallbacks: [] }, region: "us-east-1", logger: null, apiVersions: {}, apiVersion: null, endpoint: "http://localhost:8000", httpOptions: { timeout: 120000 }, maxRedirects: 10, paramValidation: true, sslEnabled: true, "s3ForcePathStyle": false, "s3BucketEndpoint": false, "s3DisableBodySigning": true, "s3UsEast1RegionalEndpoint": "legacy", computeChecksums: true, convertResponseTypes: true, correctClockSkew: false, customUserAgent: " dynamodb-data-mapper-js/0.4.0", "dynamoDbCrc32": true, systemClockOffset: 0, signatureVersion: null, signatureCache: true, retryDelayOptions: {}, useAccelerateEndpoint: false, clientSideMonitoring: false, endpointCacheSize: 1000, hostPrefixEnabled: true, stsRegionalEndpoints: "legacy", accessKeyId: "key", secretAccessKey: "key" }, endpoint: { protocol: "http:", host: "localhost:8000", port: 8000, hostname: "localhost", pathname: "/", path: "/", href: "http://localhost:8000/" }, _events: { apiCallAttempt: [null], apiCall: [null] }, _clientId: 1 }, nextRequest: { TableName: "users", IndexName: "name_index", KeyConditionExpression: "#attr0 = :val1", ExpressionAttributeNames: { "#attr0": "name" }, ExpressionAttributeValues: { ":val1": { S: "lindsay4" } } } }, lastResolved: {}, itemSchema: { id: { type: "String", keyType: "HASH" }, name: { type: "String" }, dob: { type: "Date" }, address: { type: "String" }, description: { type: "String" }, createdAt: { type: "Date" }, updateAt: { type: "Date" }, imageUrl: { type: "String" } } }, _count: 0, lastResolved: {}, pending: [] } as any as QueryIterator<User>
 
       //WHEN
       mapper.query = jest.fn(() => queryIterator)
@@ -157,7 +162,7 @@ describe('User suit', () => {
 
       const userObtained = await User.findByName('12345')
       expect(userObtained).not.toBe(null)
-      expect(userObtained).toBe(userExpected)
+      expect(userObtained.users).toBe(userExpected)
     })
   })
   describe('Find all user', () => {
@@ -180,11 +185,6 @@ describe('User suit', () => {
       usersExpected[0].id = '12345'
       usersExpected[1].id = '54321'
 
-      const responseExpected = {
-        lastEvaluatedId: usersExpected[1].id,
-        users: usersExpected,
-      }
-
       const pagesFunction = jest.fn(() => {
         return {
           next: () => {
@@ -204,6 +204,7 @@ describe('User suit', () => {
 
       expect(respObtained).not.toBe(null)
       expect(respObtained.users.length).toBe(2)
+      expect(respObtained.users).toBe(usersExpected)
     })
 
     it('Get next 2 users successfully', async () => {
