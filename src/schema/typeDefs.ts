@@ -1,7 +1,7 @@
 const typeDefs: any = `
 type Query {
     findUser(id: ID!): User
-    findUserByName(name: String!): User
+    findUsersByName(data: FindUsersByNameInput): PaginatedUsersCompose
     getUsers(lastEvaluatedId: ID, pageSize: Int): PaginatedUsers
     getAddressCoordinates(id: ID!): String!
 }
@@ -15,6 +15,26 @@ type User{
     imageUrl: String!
     createdAt: String!
     updateAt : String!
+}
+
+input FindUsersByNameInput{
+    name: String!
+    lastEvaluatedUser: LastEvaluatedUserInput
+    pageSize: Int
+}
+input LastEvaluatedUserInput{
+    id: ID
+    name: String
+}
+
+type UserCompose{
+    id: ID
+    name: String
+}
+
+type PaginatedUsersCompose{
+    users: [User]
+    lastEvaluatedUser: UserCompose
 }
 
 type PaginatedUsers {

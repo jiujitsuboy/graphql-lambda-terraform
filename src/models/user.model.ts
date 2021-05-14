@@ -1,4 +1,4 @@
-import { DynamoDbSchema, DynamoDbTable } from '@aws/dynamodb-data-mapper'
+import { DynamoDbSchema, DynamoDbTable, QueryOptions, ScanOptions } from '@aws/dynamodb-data-mapper'
 import mapper from '../db/dynamoDbClient'
 import { v4 as uuid } from 'uuid'
 import { Number } from 'aws-sdk/clients/iot'
@@ -62,13 +62,30 @@ class User {
   static find(id: String): Promise<User> {
     const tempUser: User = new User();
     tempUser.id = id;
-    return mapper.get(tempUser).catch((err) =>Promise.reject(USER_NOT_FOUND + err))
+    return mapper.get(tempUser).catch((err) => Promise.reject(USER_NOT_FOUND + err))
   }
-  static async findByName(name: String): Promise<User> {
-    const iterator = await mapper.query(User, { name }, { indexName: 'name_index' })    
-    return await (await iterator.next()).value
+  static async findByName(name: String, last?: any, size: Number = 2): Promise<PaginatedUsersCompose> {
+
+    const options: QueryOptions = {
+      limit: size,
+      indexName: 'name_index'
+    }
+
+    if (last) {
+      options.startKey = { id: last.id, name: last.name }
+    }
+
+    const paginator = await mapper.query(User, { name }, options).pages()
+
+    const page = await (await paginator.next()).value
+
+    return {
+      lastEvaluatedUser: paginator.lastEvaluatedKey ? { id: paginator.lastEvaluatedKey.id, name: paginator.lastEvaluatedKey.name } : undefined,
+      users: page,
+    };
+
   }
-  static async getAll(last?: String, size: Number = 2): Promise<PaginatedUsers> {
+  static async getAll(last?: String, size: Number = 2): Promise<PaginatedUsersId> {
 
     const options: ScanOptions = {
       limit: size
