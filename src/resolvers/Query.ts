@@ -5,6 +5,10 @@ const Query:any ={
         const user = await User.find(args.id)
         return user 
     },
+    async findUserByName(parent: any, args: any, ctx: any, info: any): Promise<User> {
+        const user = await User.findByName(args.name)
+        return user 
+    },
     async getUsers(parent: any, args: any, ctx: any, info: any): Promise<PaginatedUsers>{
        const users =  await User.getAll(args.lastEvaluatedId,args.pageSize)         
        return users
