@@ -15,6 +15,7 @@ The api offer operations over an user. The properties this user has are:
 - id
 - name
 - dob (date of birth)
+- address
 - description
 - imageUrl
 - createAt
@@ -22,13 +23,14 @@ The api offer operations over an user. The properties this user has are:
 
 # Graphql operations
 ## Queries
--**findUser:** Find a user by Id
--**getUsers:** Get all user. This result set is paginated (by default by two items). Use *pageSize*(number) to set the number of items per page. Use lastEvaluatedId (userId) to indicate from where the query should return items.
--**getAddressCoordinates:** Gets the coordinates of the user address (use mapbox https://docs.mapbox.com/api/overview/)
+- **findUser:** Find a user by Id
+- **findUserByName:** Find a user by name
+- **getUsers:** Get all user. This result set is paginated (by default by two items). Use *pageSize*(number) to set the number of items per page. Use lastEvaluatedId (userId) to indicate from where the query should return items.
+- **getAddressCoordinates:** Gets the coordinates of the user address (use mapbox https://docs.mapbox.com/api/overview/)
 ## Mutations
--**createUser:** persist a new user
--**updateUser:** update an existing user
--**deleteUser:** delete an existing user
+- **createUser:** persist a new user
+- **updateUser:** update an existing user
+- **deleteUser:** delete an existing user
 
 # Setup and deployment
 
@@ -119,9 +121,14 @@ Finally to connect you DB manager run the following command on your terminal
 ```
 DYNAMO_ENDPOINT=http://localhost:8000 dynamodb-admin
 ```
-Open you browser at *localhost:8001*. Now create a table called *users* and add select as keyschema the name *id* with the type String.
+Open you browser at *localhost:8001*. Now create a table called *users* and add the following:
+- As Hash Attribute Name (keyschema) use the name *id* with the type String.
+- Select 3 for ReadCapacityUnits and 3 for WriteCapacityUnits
+- Add a Secondary Index, call it *name_index* and as Hash Attribute Name use *name* with the type String.
+- Select 3 for ReadCapacityUnits and 3 for WriteCapacityUnits
+- Click *submit*
 
-![](images/dynamodb-admin.png)
+![](images/dynamoDBSchema.png)
 
 ## Graphql Server
 
@@ -134,6 +141,10 @@ npm run local
 Open your browser at localhost:4000 
 
 ![](images/GraphQL-Server.png)
+
+This playground will allow you to CRUD your local dynamoDB
+
+![](images/dynamodb-admin.png)
 
 # Code coverage
 
