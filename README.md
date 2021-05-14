@@ -48,11 +48,17 @@ For this project to run, you need to deployed into AWS cloud, for that you are g
 
 ## Compress source code
 
-Compress the *node_modules* and content of *dist/* folder and named as Archive.zip
+Compress the *node_modules* and content of *dist/* folder and named as Archive.zip. Use the *scripts/compressFiles.sh* to generate the zip file
+```
+./compressFiles.sh
+```
 
 ## Upload Compress file to S3
 
-Upload the zip file to S3 bucket (s3://project-bucket.lambda. You can use what ever you want, but you should update it on the terraform aws_lambda_function at set the *s3_bucket* with your custom bucket)
+Upload the zip file to S3 bucket (s3://project-bucket.lambda. You can use what ever bucket you want, but you should update it on the terraform aws_lambda_function at set the *s3_bucket* with your custom bucket). Use the *scripts/uploadZipToS3.sh* to upload the zip file to s3.
+```
+./uploadZipToS3.sh
+```
 
 ## Deploy
 
