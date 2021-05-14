@@ -1,6 +1,7 @@
 const typeDefs: any = `
 type Query {
     findUser(id: ID!): User
+    findUserByName(name: String!): User
     getUsers(lastEvaluatedId: ID, pageSize: Int): PaginatedUsers
     getAddressCoordinates(id: ID!): String!
 }

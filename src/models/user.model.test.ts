@@ -1,5 +1,5 @@
 
-import { ScanIterator } from '@aws/dynamodb-data-mapper'
+import { QueryIterator, ScanIterator } from '@aws/dynamodb-data-mapper'
 import mapper from '../db/dynamoDbClient'
 import User from './user.model'
 
@@ -78,17 +78,19 @@ describe('User suit', () => {
       )
       userExpected.id = '12345'
 
+      const USER_NOT_FOUND = 'Not able to find user: ' + userExpected.id
+
       let errExpected = {}
       //WHEN
-      mapper.get = jest.fn(() => Promise.reject('Not found'))
+      mapper.get = jest.fn(() => Promise.reject(userExpected.id))
       //THEN
       try {
-        await User.update('12345', nameUpdated)
+        const u: User = await User.update('12345', nameUpdated)
       }
       catch (err) {
         errExpected = err
       }
-      expect(errExpected).toBe('Not found')
+      expect(errExpected).toBe(USER_NOT_FOUND)
     })
   })
   describe('Delete an user', () => {
@@ -113,7 +115,7 @@ describe('User suit', () => {
     })
   })
   describe('Find an user', () => {
-    it('Find user successfully', async () => {
+    it('Find user by Id successfully', async () => {
       //GIVEN       
       const userExpected = new User(
         'name',
@@ -129,6 +131,31 @@ describe('User suit', () => {
       //THEN
 
       const userObtained = await User.find('12345')
+      expect(userObtained).not.toBe(null)
+      expect(userObtained).toBe(userExpected)
+    })
+    it('Find user by name successfully', async () => {
+      //GIVEN       
+      const userExpected = new User(
+        'name',
+        new Date(2007, 2, 3),
+        'Tv 4 # 54-56',
+        'test user',
+        'www.testuser.com'
+      )
+      userExpected.id = '12345'
+
+      const nextFunction = jest.fn(() => {
+        return { value: userExpected }
+      })
+
+      const queryIterator = { next: nextFunction, paginator: { paginator: { _count: 0, _scannedCount: 0, lastResolved: {}, client: { config: { credentials: { expired: false, expireTime: null, refreshCallbacks: [], accessKeyId: "key" }, credentialProvider: { providers: [null, null, null, null, null, null, null], resolveCallbacks: [] }, region: "us-east-1", logger: null, apiVersions: {}, apiVersion: null, endpoint: "http://localhost:8000", httpOptions: { timeout: 120000 }, maxRedirects: 10, paramValidation: true, sslEnabled: true, "s3ForcePathStyle": false, "s3BucketEndpoint": false, "s3DisableBodySigning": true, "s3UsEast1RegionalEndpoint": "legacy", computeChecksums: true, convertResponseTypes: true, correctClockSkew: false, customUserAgent: " dynamodb-data-mapper-js/0.4.0", "dynamoDbCrc32": true, systemClockOffset: 0, signatureVersion: null, signatureCache: true, retryDelayOptions: {}, useAccelerateEndpoint: false, clientSideMonitoring: false, endpointCacheSize: 1000, hostPrefixEnabled: true, stsRegionalEndpoints: "legacy", accessKeyId: "key", secretAccessKey: "key" }, endpoint: { protocol: "http:", host: "localhost:8000", port: 8000, hostname: "localhost", pathname: "/", path: "/", href: "http://localhost:8000/" }, _events: { apiCallAttempt: [null], apiCall: [null] }, _clientId: 1 }, nextRequest: { TableName: "users", IndexName: "name_index", KeyConditionExpression: "#attr0 = :val1", ExpressionAttributeNames: { "#attr0": "name" }, ExpressionAttributeValues: { ":val1": { S: "lindsay4" } } } }, lastResolved: {}, itemSchema: { id: { type: "String", keyType: "HASH" }, name: { type: "String" }, dob: { type: "Date" }, address: { type: "String" }, description: { type: "String" }, createdAt: { type: "Date" }, updateAt: { type: "Date" }, imageUrl: { type: "String" } } }, _count: 0, lastResolved: {}, pending: [] } as any as QueryIterator<User>
+
+      //WHEN
+      mapper.query = jest.fn(() => queryIterator)
+      //THEN
+
+      const userObtained = await User.findByName('12345')
       expect(userObtained).not.toBe(null)
       expect(userObtained).toBe(userExpected)
     })
@@ -163,7 +190,7 @@ describe('User suit', () => {
           next: () => {
             return { value: usersExpected }
           },
-          lastEvaluatedKey:  usersExpected[1]
+          lastEvaluatedKey: usersExpected[1]
         }
       })
 
@@ -171,16 +198,16 @@ describe('User suit', () => {
 
       //WHEN
       mapper.scan = jest.fn(() => scanIterator)
-      
+
       //THEN
       const respObtained = await User.getAll()
-      
+
       expect(respObtained).not.toBe(null)
       expect(respObtained.users.length).toBe(2)
     })
 
     it('Get next 2 users successfully', async () => {
-      
+
       //GIVEN       
       const usersExpected = [new User(
         'name',
@@ -209,7 +236,7 @@ describe('User suit', () => {
           next: () => {
             return { value: usersExpected }
           },
-          lastEvaluatedKey:  usersExpected[1]
+          lastEvaluatedKey: usersExpected[1]
         }
       })
 
@@ -220,7 +247,7 @@ describe('User suit', () => {
 
       //THEN
       const respObtained = await User.getAll('54321')
-  
+
       expect(respObtained).not.toBe(null)
       expect(respObtained.users.length).toBe(2)
     })
@@ -242,7 +269,7 @@ describe('User suit', () => {
       //THEN
 
       const userObtained = await User.getCoordinateFromAddress('12345')
-      expect(userObtained).not.toBe(null)      
+      expect(userObtained).not.toBe(null)
     })
   })
 })

@@ -12,7 +12,7 @@ describe('User suit', () => {
     })
 
     describe('Find an user', () => {
-        it('Find user successfully', async () => {
+        it('Find user by Id successfully', async () => {
 
             //GIVEN
             const userExpected = new User('name',
@@ -31,6 +31,25 @@ describe('User suit', () => {
             expect(userFound).not.toBe(null)
             expect(userFound).toBe(userExpected)
         })
+        it('Find user by Name successfully', async () => {
+
+          //GIVEN
+          const userExpected = new User('name',
+              new Date(2007, 2, 3),
+              'Tv 4 # 54-56',
+              'test user',
+              'www.testuser.com')
+          userExpected.id = '12345'
+
+          //WHEN
+          User.findByName = jest.fn(() => Promise.resolve(userExpected))
+
+          //THEN
+          const userFound = await Query.findUserByName(null, {
+              name: 'name'}, null, null)
+          expect(userFound).not.toBe(null)
+          expect(userFound).toBe(userExpected)
+      })
     })
     describe('Find all user', () => {
         it('Get first 2 users successfully', async () => {
