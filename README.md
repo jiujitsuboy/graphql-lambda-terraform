@@ -32,6 +32,27 @@ The api offer operations over an user. The properties this user has are:
 - **updateUser:** update an existing user
 - **deleteUser:** delete an existing user
 
+# Graphql schema
+
+## Queries
+
+### findUser
+![](images/findUser.png)
+### findUsersByName
+![](images/findUsersByName.png)
+### getUsers
+![](images/getUsers.png)
+### getAddressCoordinates
+![](images/getAddressCoordinates.png)
+
+## Mutations
+
+### createUser
+![](images/createUser.png)
+### updateUser
+![](images/updateUser.png)
+### deleteUser
+![](images/deleteUser.png)
 # Setup and deployment
 
 ## Enviroment variables
