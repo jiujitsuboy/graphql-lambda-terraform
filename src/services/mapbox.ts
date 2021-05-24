@@ -7,6 +7,7 @@ class MapBoxService {
   static async getCoordinateFromAddress(address: string): Promise<string> {
     const endpoint = this.url.replace('[address]', encodeURIComponent(address))
     const resp = await fetch(endpoint)
+    console.log(JSON.stringify(resp))
     const json = await resp.json()
     return json
   }

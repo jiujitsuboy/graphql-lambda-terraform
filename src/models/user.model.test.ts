@@ -1,13 +1,13 @@
 import { QueryIterator, ScanIterator } from '@aws/dynamodb-data-mapper'
 import mapper from '../db/dynamoDbClient'
 import User from './user.model'
+import MapBoxService from '../services/mapbox'
+import { jsonSuccessResponse } from '../mocks/mapBoxJsonResponse'
 
 jest.mock('../db/dynamoDbClient')
+jest.mock('../services/mapbox')
 
 describe('User suit', () => {
-  beforeEach(() => {
-    //const mapperMock = jest.spyOn(mapper, 'put')
-  })
   afterEach(() => {
     jest.clearAllMocks()
   })
@@ -491,10 +491,11 @@ describe('User suit', () => {
 
       //WHEN
       mapper.get = jest.fn(() => Promise.resolve(userExpected))
+      MapBoxService.getCoordinateFromAddress = jest.fn(() => Promise.resolve(jsonSuccessResponse))
       //THEN
 
-      const userObtained = await User.getCoordinateFromAddress('12345')
-      expect(userObtained).not.toBe(null)
+      const coordinatesObtained = await User.getCoordinateFromAddress('12345')
+      expect(coordinatesObtained).not.toBe(null)
     })
     it('Fail get address coordinates, empty address', async () => {
       //GIVEN
@@ -509,17 +510,18 @@ describe('User suit', () => {
 
       //WHEN
       mapper.get = jest.fn(() => Promise.resolve(userExpected))
+            
       //THEN
 
-      let userObtained
+      let coordinatesObtained
       let exception
       try {
-        userObtained = await User.getCoordinateFromAddress('12345')
+        coordinatesObtained = await User.getCoordinateFromAddress('12345')
       } catch (err) {
         exception = err
       }
       expect(exception).toBe('User dont registered an address')
-      expect(userObtained).toBe(undefined)
+      expect(coordinatesObtained).toBe(undefined)
     })
   })
 })
