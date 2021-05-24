@@ -4,58 +4,67 @@ import Query from './Query'
 jest.mock('../models/user.model')
 
 describe('User suit', () => {
-
-  beforeEach(() => {
-  })
   afterEach(() => {
     jest.clearAllMocks()
   })
 
   describe('Find an user', () => {
     it('Find user by Id successfully', async () => {
-
       //GIVEN
-      const userExpected = new User('name',
+      const userExpected = new User(
+        'name',
         new Date(2007, 2, 3),
         'Tv 4 # 54-56',
         'test user',
-        'www.testuser.com')
+        'www.testuser.com'
+      )
       userExpected.id = '12345'
 
       //WHEN
       User.find = jest.fn(() => Promise.resolve(userExpected))
 
       //THEN
-      const userFound = await Query.findUser(null, {
-        id: '12345'
-      }, null, null)
+      const userFound = await Query.findUser(
+        null,
+        {
+          id: '12345',
+        },
+        null,
+        null
+      )
       expect(userFound).not.toBe(null)
       expect(userFound).toBe(userExpected)
     })
     it('Find user by Name successfully', async () => {
-
       //GIVEN
-      const userExpected = new User('name',
+      const userExpected = new User(
+        'name',
         new Date(2007, 2, 3),
         'Tv 4 # 54-56',
         'test user',
-        'www.testuser.com')
+        'www.testuser.com'
+      )
       userExpected.id = '12345'
 
       const responseExpected = {
         lastEvaluatedUser: { id: userExpected.id, name: userExpected.name },
-        users: userExpected,
+        users: { value: [userExpected], done: true },
       }
 
       //WHEN
-      User.findByName = jest.fn((name: String) => Promise.resolve(responseExpected))
+      User.findByName = jest.fn(() => Promise.resolve(responseExpected))
 
       //THEN
-      const userFound = await Query.findUsersByName(null, {
-        data: {
-          name: 'name'
-        }
-      }, null, null)
+      const userFound = await Query.findUsersByName(
+        null,
+        {
+          data: {
+            name: 'name',
+          },
+        },
+        null,
+        null
+      )
       expect(userFound).not.toBe(null)
       expect(userFound).toBe(responseExpected)
     })
@@ -63,26 +72,17 @@ describe('User suit', () => {
   describe('Find all user', () => {
     it('Get first 2 users successfully', async () => {
       //GIVEN
-      const usersExpected = [new User(
-        'name',
-        new Date(2007, 2, 3),
-        'Tv 4 # 54-56',
-        'test user',
-        'www.testuser.com'
-      ), new User(
-        'name2',
-        new Date(2007, 2, 3),
-        'Tv 42 # 54-56',
-        'test user2',
-        'www.testuser2.com'
-      )]
+      const usersExpected = [
+        new User('name', new Date(2007, 2, 3), 'Tv 4 # 54-56', 'test user', 'www.testuser.com'),
+        new User('name2', new Date(2007, 2, 3), 'Tv 42 # 54-56', 'test user2', 'www.testuser2.com'),
+      ]
 
       usersExpected[0].id = '12345'
       usersExpected[1].id = '54321'
 
       const responseExpected = {
         lastEvaluatedId: usersExpected[1].id,
-        users: usersExpected,
+        users: { value: usersExpected, done: true },
       }
 
       //WHEN
@@ -96,7 +96,7 @@ describe('User suit', () => {
   })
   describe('Get address coordinates', () => {
     it('Get address coordinates successfully', async () => {
-      //GIVEN       
+      //GIVEN
       const jsonExpected = `{
                 type: 'FeatureCollection',
                 query: [ 'tv', '4', '54-56' ],
@@ -184,9 +184,14 @@ describe('User suit', () => {
       User.getCoordinateFromAddress = jest.fn(() => Promise.resolve(jsonExpected))
       //THEN
 
-      const jsonReceived = await Query.getAddressCoordinates(null, {
-        id: '12345'
-      }, null, null)
+      const jsonReceived = await Query.getAddressCoordinates(
+        null,
+        {
+          id: '12345',
+        },
+        null,
+        null
+      )
       expect(jsonReceived).not.toBe(null)
       expect(jsonReceived).toBe(JSON.stringify(jsonExpected))
     })

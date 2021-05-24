@@ -1,4 +1,3 @@
-
 import { QueryIterator, ScanIterator } from '@aws/dynamodb-data-mapper'
 import mapper from '../db/dynamoDbClient'
 import User from './user.model'
@@ -6,14 +5,12 @@ import User from './user.model'
 jest.mock('../db/dynamoDbClient')
 
 describe('User suit', () => {
-
   beforeEach(() => {
     //const mapperMock = jest.spyOn(mapper, 'put')
   })
   afterEach(() => {
     jest.clearAllMocks()
   })
-
 
   describe('Create an user', () => {
     it('Create user successfully', async () => {
@@ -26,13 +23,15 @@ describe('User suit', () => {
         description: 'test user',
         imageUrl: 'www.testuser.com',
         createdAt: '2021-05-10',
-        updateAt: '2021-05-10'
+        updateAt: '2021-05-10',
       }
-      const user = new User('name',
+      const user = new User(
+        'name',
         new Date(2007, 2, 3),
         'Tv 4 # 54-56',
         'test user',
-        'www.testuser.com')
+        'www.testuser.com'
+      )
       //WHEN
       mapper.put = jest.fn(() => Promise.resolve(userExpected))
       //THEN
@@ -85,9 +84,8 @@ describe('User suit', () => {
       mapper.get = jest.fn(() => Promise.reject(userExpected.id))
       //THEN
       try {
-        const u: User = await User.update('12345', nameUpdated)
-      }
-      catch (err) {
+        await User.update('12345', nameUpdated)
+      } catch (err) {
         errExpected = err
       }
       expect(errExpected).toBe(USER_NOT_FOUND)
@@ -95,7 +93,7 @@ describe('User suit', () => {
   })
   describe('Delete an user', () => {
     it('Delete user successfully', async () => {
-      //GIVEN       
+      //GIVEN
       const userExpected = new User(
         'name',
         new Date(2007, 2, 3),
@@ -116,7 +114,7 @@ describe('User suit', () => {
   })
   describe('Find an user', () => {
     it('Find user by Id successfully', async () => {
-      //GIVEN       
+      //GIVEN
       const userExpected = new User(
         'name',
         new Date(2007, 2, 3),
@@ -135,7 +133,7 @@ describe('User suit', () => {
       expect(userObtained).toBe(userExpected)
     })
     it('Find user by name successfully', async () => {
-      //GIVEN       
+      //GIVEN
       const userExpected = new User(
         'name',
         new Date(2007, 2, 3),
@@ -150,11 +148,95 @@ describe('User suit', () => {
           next: () => {
             return { value: userExpected }
           },
-          lastEvaluatedKey: {id: userExpected.id, name: userExpected.name}
+          lastEvaluatedKey: { id: userExpected.id, name: userExpected.name },
         }
       })
 
-      const queryIterator = { pages: pagesFunction, paginator: { paginator: { _count: 0, _scannedCount: 0, lastResolved: {}, client: { config: { credentials: { expired: false, expireTime: null, refreshCallbacks: [], accessKeyId: "key" }, credentialProvider: { providers: [null, null, null, null, null, null, null], resolveCallbacks: [] }, region: "us-east-1", logger: null, apiVersions: {}, apiVersion: null, endpoint: "http://localhost:8000", httpOptions: { timeout: 120000 }, maxRedirects: 10, paramValidation: true, sslEnabled: true, "s3ForcePathStyle": false, "s3BucketEndpoint": false, "s3DisableBodySigning": true, "s3UsEast1RegionalEndpoint": "legacy", computeChecksums: true, convertResponseTypes: true, correctClockSkew: false, customUserAgent: " dynamodb-data-mapper-js/0.4.0", "dynamoDbCrc32": true, systemClockOffset: 0, signatureVersion: null, signatureCache: true, retryDelayOptions: {}, useAccelerateEndpoint: false, clientSideMonitoring: false, endpointCacheSize: 1000, hostPrefixEnabled: true, stsRegionalEndpoints: "legacy", accessKeyId: "key", secretAccessKey: "key" }, endpoint: { protocol: "http:", host: "localhost:8000", port: 8000, hostname: "localhost", pathname: "/", path: "/", href: "http://localhost:8000/" }, _events: { apiCallAttempt: [null], apiCall: [null] }, _clientId: 1 }, nextRequest: { TableName: "users", IndexName: "name_index", KeyConditionExpression: "#attr0 = :val1", ExpressionAttributeNames: { "#attr0": "name" }, ExpressionAttributeValues: { ":val1": { S: "lindsay4" } } } }, lastResolved: {}, itemSchema: { id: { type: "String", keyType: "HASH" }, name: { type: "String" }, dob: { type: "Date" }, address: { type: "String" }, description: { type: "String" }, createdAt: { type: "Date" }, updateAt: { type: "Date" }, imageUrl: { type: "String" } } }, _count: 0, lastResolved: {}, pending: [] } as any as QueryIterator<User>
+      const queryIterator = {
+        pages: pagesFunction,
+        paginator: {
+          paginator: {
+            _count: 0,
+            _scannedCount: 0,
+            lastResolved: {},
+            client: {
+              config: {
+                credentials: {
+                  expired: false,
+                  expireTime: null,
+                  refreshCallbacks: [],
+                  accessKeyId: 'key',
+                },
+                credentialProvider: {
+                  providers: [null, null, null, null, null, null, null],
+                  resolveCallbacks: [],
+                },
+                region: 'us-east-1',
+                logger: null,
+                apiVersions: {},
+                apiVersion: null,
+                endpoint: 'http://localhost:8000',
+                httpOptions: { timeout: 120000 },
+                maxRedirects: 10,
+                paramValidation: true,
+                sslEnabled: true,
+                s3ForcePathStyle: false,
+                s3BucketEndpoint: false,
+                s3DisableBodySigning: true,
+                s3UsEast1RegionalEndpoint: 'legacy',
+                computeChecksums: true,
+                convertResponseTypes: true,
+                correctClockSkew: false,
+                customUserAgent: ' dynamodb-data-mapper-js/0.4.0',
+                dynamoDbCrc32: true,
+                systemClockOffset: 0,
+                signatureVersion: null,
+                signatureCache: true,
+                retryDelayOptions: {},
+                useAccelerateEndpoint: false,
+                clientSideMonitoring: false,
+                endpointCacheSize: 1000,
+                hostPrefixEnabled: true,
+                stsRegionalEndpoints: 'legacy',
+                accessKeyId: 'key',
+                secretAccessKey: 'key',
+              },
+              endpoint: {
+                protocol: 'http:',
+                host: 'localhost:8000',
+                port: 8000,
+                hostname: 'localhost',
+                pathname: '/',
+                path: '/',
+                href: 'http://localhost:8000/',
+              },
+              _events: { apiCallAttempt: [null], apiCall: [null] },
+              _clientId: 1,
+            },
+            nextRequest: {
+              TableName: 'users',
+              IndexName: 'name_index',
+              KeyConditionExpression: '#attr0 = :val1',
+              ExpressionAttributeNames: { '#attr0': 'name' },
+              ExpressionAttributeValues: { ':val1': { S: 'lindsay4' } },
+            },
+          },
+          lastResolved: {},
+          itemSchema: {
+            id: { type: 'String', keyType: 'HASH' },
+            name: { type: 'String' },
+            dob: { type: 'Date' },
+            address: { type: 'String' },
+            description: { type: 'String' },
+            createdAt: { type: 'Date' },
+            updateAt: { type: 'Date' },
+            imageUrl: { type: 'String' },
+          },
+        },
+        _count: 0,
+        lastResolved: {},
+        pending: [],
+      } as any as QueryIterator<User>
 
       //WHEN
       mapper.query = jest.fn(() => queryIterator)
@@ -167,20 +249,11 @@ describe('User suit', () => {
   })
   describe('Find all user', () => {
     it('Get first 2 users successfully', async () => {
-      //GIVEN       
-      const usersExpected = [new User(
-        'name',
-        new Date(2007, 2, 3),
-        'Tv 4 # 54-56',
-        'test user',
-        'www.testuser.com'
-      ), new User(
-        'name2',
-        new Date(2007, 2, 3),
-        'Tv 42 # 54-56',
-        'test user2',
-        'www.testuser2.com'
-      )]
+      //GIVEN
+      const usersExpected: User[] = [
+        new User('name', new Date(2007, 2, 3), 'Tv 4 # 54-56', 'test user', 'www.testuser.com'),
+        new User('name2', new Date(2007, 2, 3), 'Tv 42 # 54-56', 'test user2', 'www.testuser2.com'),
+      ]
 
       usersExpected[0].id = '12345'
       usersExpected[1].id = '54321'
@@ -190,72 +263,223 @@ describe('User suit', () => {
           next: () => {
             return { value: usersExpected }
           },
-          lastEvaluatedKey: usersExpected[1]
+          lastEvaluatedKey: usersExpected[1],
         }
       })
 
-      const scanIterator = { pages: pagesFunction, paginator: { paginator: { limit: 2, _count: 0, _scannedCount: 0, lastResolved: {}, client: { config: { credentials: { expired: false, expireTime: null, refreshCallbacks: [], accessKeyId: "key" }, credentialProvider: { providers: [null, null, null, null, null, null, null], resolveCallbacks: [] }, region: "us-central-1", logger: null, apiVersions: {}, apiVersion: null, endpoint: "http://localhost:8000", httpOptions: { timeout: 120000 }, maxRedirects: 10, paramValidation: true, sslEnabled: true, "s3ForcePathStyle": false, "s3BucketEndpoint": false, "s3DisableBodySigning": true, "s3UsEast1RegionalEndpoint": "legacy", computeChecksums: true, convertResponseTypes: true, correctClockSkew: false, customUserAgent: " dynamodb-data-mapper-js/0.4.0", "dynamoDbCrc32": true, systemClockOffset: 0, signatureVersion: null, signatureCache: true, retryDelayOptions: {}, useAccelerateEndpoint: false, clientSideMonitoring: false, endpointCacheSize: 1000, hostPrefixEnabled: true, stsRegionalEndpoints: "legacy", accessKeyId: "key", secretAccessKey: "key" }, endpoint: { protocol: "http:", host: "localhost:8000", port: 8000, hostname: "localhost", pathname: "/", path: "/", href: "http://localhost:8000/" }, _events: { apiCallAttempt: [null], apiCall: [null] }, _clientId: 1 }, nextRequest: { TableName: "users", Limit: 2, ExclusiveStartKey: { id: { S: "af4f510f-abe3-4f0a-ae55-79f6c7dfda7a" } } } }, lastResolved: {}, itemSchema: { id: { type: "String", keyType: "HASH" }, name: { type: "String" }, dob: { type: "Date" }, address: { type: "String" }, description: { type: "String" }, createdAt: { type: "Date" }, updateAt: { type: "Date" }, imageUrl: { type: "String" } } }, _count: 0, lastResolved: {}, pending: [] } as any as ScanIterator<User>
+      const scanIterator = {
+        pages: pagesFunction,
+        paginator: {
+          paginator: {
+            limit: 2,
+            _count: 0,
+            _scannedCount: 0,
+            lastResolved: {},
+            client: {
+              config: {
+                credentials: {
+                  expired: false,
+                  expireTime: null,
+                  refreshCallbacks: [],
+                  accessKeyId: 'key',
+                },
+                credentialProvider: {
+                  providers: [null, null, null, null, null, null, null],
+                  resolveCallbacks: [],
+                },
+                region: 'us-central-1',
+                logger: null,
+                apiVersions: {},
+                apiVersion: null,
+                endpoint: 'http://localhost:8000',
+                httpOptions: { timeout: 120000 },
+                maxRedirects: 10,
+                paramValidation: true,
+                sslEnabled: true,
+                s3ForcePathStyle: false,
+                s3BucketEndpoint: false,
+                s3DisableBodySigning: true,
+                s3UsEast1RegionalEndpoint: 'legacy',
+                computeChecksums: true,
+                convertResponseTypes: true,
+                correctClockSkew: false,
+                customUserAgent: ' dynamodb-data-mapper-js/0.4.0',
+                dynamoDbCrc32: true,
+                systemClockOffset: 0,
+                signatureVersion: null,
+                signatureCache: true,
+                retryDelayOptions: {},
+                useAccelerateEndpoint: false,
+                clientSideMonitoring: false,
+                endpointCacheSize: 1000,
+                hostPrefixEnabled: true,
+                stsRegionalEndpoints: 'legacy',
+                accessKeyId: 'key',
+                secretAccessKey: 'key',
+              },
+              endpoint: {
+                protocol: 'http:',
+                host: 'localhost:8000',
+                port: 8000,
+                hostname: 'localhost',
+                pathname: '/',
+                path: '/',
+                href: 'http://localhost:8000/',
+              },
+              _events: { apiCallAttempt: [null], apiCall: [null] },
+              _clientId: 1,
+            },
+            nextRequest: {
+              TableName: 'users',
+              Limit: 2,
+              ExclusiveStartKey: { id: { S: 'af4f510f-abe3-4f0a-ae55-79f6c7dfda7a' } },
+            },
+          },
+          lastResolved: {},
+          itemSchema: {
+            id: { type: 'String', keyType: 'HASH' },
+            name: { type: 'String' },
+            dob: { type: 'Date' },
+            address: { type: 'String' },
+            description: { type: 'String' },
+            createdAt: { type: 'Date' },
+            updateAt: { type: 'Date' },
+            imageUrl: { type: 'String' },
+          },
+        },
+        _count: 0,
+        lastResolved: {},
+        pending: [],
+      } as any as ScanIterator<User>
 
       //WHEN
       mapper.scan = jest.fn(() => scanIterator)
 
       //THEN
       const respObtained = await User.getAll()
-
       expect(respObtained).not.toBe(null)
-      expect(respObtained.users.length).toBe(2)
+      const arrUserExpected = respObtained.users as any as User[]
+      expect(arrUserExpected.length).toBe(2)
       expect(respObtained.users).toBe(usersExpected)
     })
 
     it('Get next 2 users successfully', async () => {
-
-      //GIVEN       
-      const usersExpected = [new User(
-        'name',
-        new Date(2007, 2, 3),
-        'Tv 4 # 54-56',
-        'test user',
-        'www.testuser.com'
-      ), new User(
-        'name2',
-        new Date(2007, 2, 3),
-        'Tv 42 # 54-56',
-        'test user2',
-        'www.testuser2.com'
-      )]
+      //GIVEN
+      const usersExpected = [
+        new User('name', new Date(2007, 2, 3), 'Tv 4 # 54-56', 'test user', 'www.testuser.com'),
+        new User('name2', new Date(2007, 2, 3), 'Tv 42 # 54-56', 'test user2', 'www.testuser2.com'),
+      ]
 
       usersExpected[0].id = '12345'
       usersExpected[1].id = '54321'
-
-      const responseExpected = {
-        lastEvaluatedId: usersExpected[1].id,
-        users: usersExpected,
-      }
 
       const pagesFunction = jest.fn(() => {
         return {
           next: () => {
             return { value: usersExpected }
           },
-          lastEvaluatedKey: usersExpected[1]
+          lastEvaluatedKey: usersExpected[1],
         }
       })
 
-      const scanIterator = { pages: pagesFunction, paginator: { paginator: { limit: 2, _count: 0, _scannedCount: 0, lastResolved: {}, client: { config: { credentials: { expired: false, expireTime: null, refreshCallbacks: [], accessKeyId: "key" }, credentialProvider: { providers: [null, null, null, null, null, null, null], resolveCallbacks: [] }, region: "us-central-1", logger: null, apiVersions: {}, apiVersion: null, endpoint: "http://localhost:8000", httpOptions: { timeout: 120000 }, maxRedirects: 10, paramValidation: true, sslEnabled: true, "s3ForcePathStyle": false, "s3BucketEndpoint": false, "s3DisableBodySigning": true, "s3UsEast1RegionalEndpoint": "legacy", computeChecksums: true, convertResponseTypes: true, correctClockSkew: false, customUserAgent: " dynamodb-data-mapper-js/0.4.0", "dynamoDbCrc32": true, systemClockOffset: 0, signatureVersion: null, signatureCache: true, retryDelayOptions: {}, useAccelerateEndpoint: false, clientSideMonitoring: false, endpointCacheSize: 1000, hostPrefixEnabled: true, stsRegionalEndpoints: "legacy", accessKeyId: "key", secretAccessKey: "key" }, endpoint: { protocol: "http:", host: "localhost:8000", port: 8000, hostname: "localhost", pathname: "/", path: "/", href: "http://localhost:8000/" }, _events: { apiCallAttempt: [null], apiCall: [null] }, _clientId: 1 }, nextRequest: { TableName: "users", Limit: 2, ExclusiveStartKey: { id: { S: "af4f510f-abe3-4f0a-ae55-79f6c7dfda7a" } } } }, lastResolved: {}, itemSchema: { id: { type: "String", keyType: "HASH" }, name: { type: "String" }, dob: { type: "Date" }, address: { type: "String" }, description: { type: "String" }, createdAt: { type: "Date" }, updateAt: { type: "Date" }, imageUrl: { type: "String" } } }, _count: 0, lastResolved: {}, pending: [] } as any as ScanIterator<User>
+      const scanIterator = {
+        pages: pagesFunction,
+        paginator: {
+          paginator: {
+            limit: 2,
+            _count: 0,
+            _scannedCount: 0,
+            lastResolved: {},
+            client: {
+              config: {
+                credentials: {
+                  expired: false,
+                  expireTime: null,
+                  refreshCallbacks: [],
+                  accessKeyId: 'key',
+                },
+                credentialProvider: {
+                  providers: [null, null, null, null, null, null, null],
+                  resolveCallbacks: [],
+                },
+                region: 'us-central-1',
+                logger: null,
+                apiVersions: {},
+                apiVersion: null,
+                endpoint: 'http://localhost:8000',
+                httpOptions: { timeout: 120000 },
+                maxRedirects: 10,
+                paramValidation: true,
+                sslEnabled: true,
+                s3ForcePathStyle: false,
+                s3BucketEndpoint: false,
+                s3DisableBodySigning: true,
+                s3UsEast1RegionalEndpoint: 'legacy',
+                computeChecksums: true,
+                convertResponseTypes: true,
+                correctClockSkew: false,
+                customUserAgent: ' dynamodb-data-mapper-js/0.4.0',
+                dynamoDbCrc32: true,
+                systemClockOffset: 0,
+                signatureVersion: null,
+                signatureCache: true,
+                retryDelayOptions: {},
+                useAccelerateEndpoint: false,
+                clientSideMonitoring: false,
+                endpointCacheSize: 1000,
+                hostPrefixEnabled: true,
+                stsRegionalEndpoints: 'legacy',
+                accessKeyId: 'key',
+                secretAccessKey: 'key',
+              },
+              endpoint: {
+                protocol: 'http:',
+                host: 'localhost:8000',
+                port: 8000,
+                hostname: 'localhost',
+                pathname: '/',
+                path: '/',
+                href: 'http://localhost:8000/',
+              },
+              _events: { apiCallAttempt: [null], apiCall: [null] },
+              _clientId: 1,
+            },
+            nextRequest: {
+              TableName: 'users',
+              Limit: 2,
+              ExclusiveStartKey: { id: { S: 'af4f510f-abe3-4f0a-ae55-79f6c7dfda7a' } },
+            },
+          },
+          lastResolved: {},
+          itemSchema: {
+            id: { type: 'String', keyType: 'HASH' },
+            name: { type: 'String' },
+            dob: { type: 'Date' },
+            address: { type: 'String' },
+            description: { type: 'String' },
+            createdAt: { type: 'Date' },
+            updateAt: { type: 'Date' },
+            imageUrl: { type: 'String' },
+          },
+        },
+        _count: 0,
+        lastResolved: {},
+        pending: [],
+      } as any as ScanIterator<User>
 
       //WHEN
       mapper.scan = jest.fn(() => scanIterator)
 
       //THEN
       const respObtained = await User.getAll('54321')
-
       expect(respObtained).not.toBe(null)
-      expect(respObtained.users.length).toBe(2)
+      const arrUserExpected = respObtained.users as any as User[]
+      expect(arrUserExpected.length).toBe(2)
     })
   })
   describe('Get address coordinates', () => {
     it('Get address coordinates successfully', async () => {
-      //GIVEN       
+      //GIVEN
       const userExpected = new User(
         'name',
         new Date(2007, 2, 3),
@@ -271,6 +495,31 @@ describe('User suit', () => {
 
       const userObtained = await User.getCoordinateFromAddress('12345')
       expect(userObtained).not.toBe(null)
+    })
+    it('Fail get address coordinates, empty address', async () => {
+      //GIVEN
+      const userExpected = new User(
+        'name',
+        new Date(2007, 2, 3),
+        undefined,
+        'test user',
+        'www.testuser.com'
+      )
+      userExpected.id = '12345'
+
+      //WHEN
+      mapper.get = jest.fn(() => Promise.resolve(userExpected))
+      //THEN
+
+      let userObtained
+      let exception
+      try {
+        userObtained = await User.getCoordinateFromAddress('12345')
+      } catch (err) {
+        exception = err
+      }
+      expect(exception).toBe('User dont registered an address')
+      expect(userObtained).toBe(undefined)
     })
   })
 })
