@@ -1,4 +1,7 @@
 const typeDefs: any = `
+
+scalar Date
+
 type Query {
     findUser(id: ID!): User
     findUsersByName(data: FindUsersByNameInput): PaginatedUsersCompose
@@ -13,8 +16,8 @@ type User{
     address: String!
     description : String!
     imageUrl: String!
-    createdAt: String!
-    updateAt : String!
+    createdAt: Date!
+    updateAt : Date!
 }
 
 input FindUsersByNameInput{

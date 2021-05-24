@@ -54,13 +54,13 @@ class User {
     imageUrl?: string
   ): Promise<User> {
     return this.find(id).then((user) => {
-      // user.name = name !== undefined ? name : user.name
-      user.name = name !== undefined ? name : user.name
-      user.dob = dob !== undefined ? dob : user.dob
-      user.address = address !== undefined ? address : user.address
-      user.description = description !== undefined ? description : user.description
-      user.imageUrl = imageUrl !== undefined ? imageUrl : user.imageUrl
+      user.name = name ?? user.name
+      user.dob = dob ?? user.dob
+      user.address = address ?? user.address
+      user.description = description ?? user.description
+      user.imageUrl = imageUrl ?? user.imageUrl
       user.updateAt = new Date()
+
       return user.save()
     })
   }
@@ -75,7 +75,11 @@ class User {
     tempUser.id = id
     return mapper.get(tempUser).catch((err) => Promise.reject(USER_NOT_FOUND + err))
   }
-  static async findByName(name: string, last?: any, size = 2): Promise<PaginatedUsersCompose> {
+  static async findByName(
+    name: string,
+    last?: Partial<User>,
+    size = 2
+  ): Promise<PaginatedUsersCompose> {
     const options: QueryOptions = {
       limit: size,
       indexName: 'name_index',

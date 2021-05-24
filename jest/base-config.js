@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { testDir, typesDir } = require('./paths')
+const { typesDir } = require('./paths')
 
 module.exports = {
   testEnvironment: 'node',

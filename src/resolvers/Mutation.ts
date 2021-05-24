@@ -17,6 +17,7 @@ const Mutation: any = {
     return User.update(
       args.data.id,
       args.data.name,
+      args.data.dob,
       args.data.address,
       args.data.description,
       args.data.imageUrl
