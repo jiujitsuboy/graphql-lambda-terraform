@@ -1,0 +1,8 @@
+.vscode/
+node_modules/
+dist/
+coverage/
+.idea
+.terraform*
+terraform.tfstate*
+.DS_Store
